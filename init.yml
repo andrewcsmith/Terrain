@@ -1,3 +1,4 @@
-prime_limits: [5, 5, 3, 2, 1, 1]
-bounds: [0.0, 4.0]
-starting_pitches: [2.41666666666666667, 2.8333333333333333]
+prime_limits: [7, 6, 4, 3, 2, 1]
+bounds: [0.0, 5.0]
+starting_pitches: [4.41666666666666667, 4.8333333333333333]
+starting_harmonic: 12
