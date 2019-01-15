@@ -51,6 +51,8 @@ class Structure:
         with open("./init.yml", "r") as init:
             options = yaml.safe_load(init)
         duo = TromboneDuo()
+        for trombone in duo.trombones:
+            trombone.harmonic = options['starting_harmonic']
         duo.cache_vectors(options['prime_limits'], options['bounds'])
         duo.current_pitches = np.array([options['starting_pitches']])
         return duo
@@ -78,14 +80,14 @@ class Structure:
     
     def __move_base_to_g(self):
         diff = G - self.current_base
-        self.current_base = G
         self.current_base_ratio = np.array([-1., 1., 0., 0., 0., 0.])
+        self.current_base = self.__get_current_base()
         self.duo.current_pitches -= diff
     
     def __move_base_to_c(self):
         diff = 0.0 - self.current_base
-        self.current_base = 0.0
         self.current_base_ratio = np.array([0., 0., 0., 0., 0., 0.])
+        self.current_base = self.__get_current_base()
         self.duo.current_pitches -= diff
     
     def step(self):
@@ -95,4 +97,12 @@ class Structure:
             self.__move_base_to_g()
         else:
             self.__move_base_downhill()
-        self.duo.find_new_pitches()
+        self.duo.find_new_pitches(base=self.current_base)
+    
+    def decrement_harmonic(self):
+        current = self.duo.trombones[0].harmonic
+        ratio = np.log2(current / (current-1))
+        for t in self.duo.trombones:
+            t.harmonic = current - 1
+        self.duo.current_pitches -= ratio
+        self.duo.find_new_pitches(base=self.current_base)
