@@ -66,6 +66,19 @@ class Optimizer:
                 return self.ending_pitches
         print("Did not converge.")
 
+class BoundedOptimizer(Optimizer):
+    def __set_2d_bounds(self, bounds):
+        lower_bound = self.pds >= bounds[:, 0]
+        upper_bound = self.pds <= bounds[:, 1]
+        mask = tf.reduce_all(tf.logical_and(lower_bound, upper_bound), axis=1)
+        self.masked_pds = tf.boolean_mask(self.pds, mask)
+        self.masked_hds = tf.boolean_mask(self.hds, mask)
+    
+    def populate_loss(self, bounds):
+        self.__set_2d_bounds(bounds)
+        self.loss = hd.optimize.parabolic_loss_function(self.masked_pds, 
+            self.masked_hds, self.log_pitches, a=self.c, b=self.c)
+
 class DownhillOptimizer(Optimizer):
     def populate_vectors(self, prime_limits, bounds, hd_threshold=9.0):
         """
