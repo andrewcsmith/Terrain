@@ -26,7 +26,7 @@ class Structure:
     
     def __init_downhill(self):
         opt = DownhillOptimizer(n_points=1024)
-        opt.populate_vectors([5, 5, 3, 2, 1, 1], (0.0, 1.0))
+        opt.populate_vectors([5, 5, 3, 2, 1, 1], (0.0, 1.0), hd_threshold=10.0)
         opt.populate_perms()
         opt.populate_distances()
         opt.populate_loss()
@@ -58,7 +58,7 @@ class Structure:
         duo = TromboneDuo()
         for trombone in duo.trombones:
             trombone.harmonic = options['starting_harmonic']
-        duo.cache_vectors(options['prime_limits'], options['bounds'])
+        duo.cache_vectors(options['prime_limits'], options['bounds'], options['hd_threshold'])
         duo.current_pitches = np.array([options['starting_pitches']])
         return duo
     
