@@ -107,10 +107,17 @@ class Structure:
             self.__move_base_downhill()
         self.duo.find_new_pitches(base=self.current_base)
     
-    def decrement_harmonic(self):
-        current = self.duo.trombones[0].harmonic
+    def decrement_harmonic(self, which=None):
+        if which is None:
+            for t in self.duo.trombones:
+                current = t.harmonic
+                ratio = np.log2(current / (current-1))
+                t.harmonic = current - 1
+        else:
+            for idx in which:
+                t = self.duo.trombones[idx]
+                current = t.harmonic
         ratio = np.log2(current / (current-1))
-        for t in self.duo.trombones:
             t.harmonic = current - 1
         self.duo.current_pitches -= ratio
         self.duo.find_new_pitches(base=self.current_base)
