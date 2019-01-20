@@ -18,6 +18,8 @@ class Structure:
         self.current_base_ratio = np.array([0., 0., 0., 0., 0., 0.])
         self.duo = self.__get_duo()
         self.duo.find_new_pitches()
+        # List of ratios to determine possible aggregate harmonic distance
+        self.ratio_stack = self.__get_ratio_stack()
 
     def __repr__(self):
         return f"{self.current_base}\n{self.current_base_ratio}\n{self.duo.current_pitches}\n{self.duo.current_ratio()}"
@@ -29,6 +31,9 @@ class Structure:
         opt.populate_distances()
         opt.populate_loss()
         return opt
+    
+    def __get_ratio_stack(self):
+        return np.array([[0., 0., 0., 0., 0., 0.]])
     
     def __get_downhill(self):
         """
@@ -63,13 +68,14 @@ class Structure:
 
     def __sess(self):
         return self.duo.optimizer.session
+    
+    def __get_downhill_hd_graph(self):
+        ratios = np.append(self.ratio_stack, self.duo.current_ratio(), axis=0)
+        diffs = ratios - self.downhill_ratios[:, None, :]
+        return hd.tenney.hd_aggregate_graph(diffs)
 
     def __move_base_downhill(self):
-        ratio = self.duo.current_ratio()
-        diffs = ratio[:, None, :] - self.downhill_ratios
-        possibilities = tf.reshape(diffs, [-1, 2, 6])
-        hds = hd.tenney.hd_aggregate_graph(possibilities)
-        idx = self.__sess().run(tf.argmin(hds))
+        idx = self.__sess().run(tf.argmin(self.__get_downhill_hd_graph()))
         self.current_base_ratio += self.downhill_ratios[idx]
         self.current_base = self.__get_current_base()
         self.duo.current_pitches -= self.downhill_pds[0, idx]
@@ -89,6 +95,8 @@ class Structure:
         self.current_base_ratio = np.array([0., 0., 0., 0., 0., 0.])
         self.current_base = self.__get_current_base()
         self.duo.current_pitches -= diff
+        # Re-initialize ratio stack
+        self.ratio_stack = self.__get_ratio_stack()
     
     def step(self):
         if self.current_base == G:
