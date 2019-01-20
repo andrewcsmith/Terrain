@@ -74,7 +74,7 @@ class Structure:
         self.current_base = self.__get_current_base()
         self.duo.current_pitches -= self.downhill_pds[0, idx]
         if self.current_base >= 1.0:
-            self.current_base_ratio -= np.array([1.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+            self.current_base_ratio -= np.array([1., 0., 0., 0., 0., 0.])
             self.current_base = self.__get_current_base()
             self.duo.current_pitches += 1.0
     
