@@ -22,7 +22,7 @@ class Structure:
         self.ratio_stack = self.__get_ratio_stack()
 
     def __repr__(self):
-        return f"{self.current_base}\n{self.current_base_ratio}\n{self.duo.current_pitches}\n{self.duo.current_ratio()}"
+        return f"{self.current_base}\n{self.current_base_ratio}\n{self.duo.current_pitches + self.current_base}\n{self.duo.current_ratio()}"
     
     def __init_downhill(self):
         opt = DownhillOptimizer(n_points=1024)
@@ -117,7 +117,7 @@ class Structure:
             for idx in which:
                 t = self.duo.trombones[idx]
                 current = t.harmonic
-        ratio = np.log2(current / (current-1))
-            t.harmonic = current - 1
+                ratio = np.log2(current / (current-1))
+                t.harmonic = current - 1
         self.duo.current_pitches -= ratio
         self.duo.find_new_pitches(base=self.current_base)
