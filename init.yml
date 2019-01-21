@@ -1,4 +1,4 @@
-prime_limits: [7, 6, 4, 3, 2, 1]
+prime_limits: [7, 6, 4, 3, 1, 0]
 bounds: [0.0, 5.0]
 hd_threshold: 10.0
 starting_pitches: [4.41666666666666667, 4.8333333333333333]
