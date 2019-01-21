@@ -5,7 +5,7 @@ import tensorflow as tf
 class Optimizer:
     def __init__(self, c=0.02, learning_rate=1.0e-4, 
                 convergence_threshold=1.0e-8, max_iters=10000,
-                n_points=1, session=None):
+                n_points=1, session=None, dimensions=2):
         self.__init_session(session)
         # Initialize relevant parameters
         self.c = c
@@ -13,7 +13,7 @@ class Optimizer:
         self.convergence_threshold = convergence_threshold
         self.max_iters = max_iters
         # Hard-code dimensions to 2 for now
-        self.dimensions = 2
+        self.dimensions = dimensions
         self.offset = 0.0
         with tf.variable_scope("optimizer", reuse=tf.AUTO_REUSE):
             self.log_pitches = tf.get_variable(f"log_pitches_{n_points}x{self.dimensions}", [n_points, self.dimensions], dtype=tf.float64)
@@ -93,4 +93,4 @@ class DownhillOptimizer(Optimizer):
         """
         For this 1-d optimizer, we just want to set the second point to 1/1
         """
-        self.perms = tf.stack([tf.zeros_like(self.vectors), self.vectors], 1)
+        self.perms = self.vectors[:, None, :]

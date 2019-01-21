@@ -25,8 +25,8 @@ class Structure:
         return f"{self.current_base}\n{self.current_base_ratio}\n{self.duo.current_pitches + self.current_base}\n{self.duo.current_ratio()}"
     
     def __init_downhill(self):
-        opt = DownhillOptimizer(n_points=1024)
-        opt.populate_vectors([5, 5, 3, 2, 1, 1], (0.0, 1.0), hd_threshold=10.0)
+        opt = DownhillOptimizer(n_points=1024, c=0.03, learning_rate=1.0e-3, dimensions=1)
+        opt.populate_vectors([5, 5, 3, 2, 1, 1], (0.0, 1.0), hd_threshold=12.0)
         opt.populate_perms()
         opt.populate_distances()
         opt.populate_loss()
@@ -43,9 +43,8 @@ class Structure:
         Returns a tuple of the vectors followed by the pitch distances.
         """
         xs = np.linspace(0.0, 1.0, 1024)
-        xys = np.stack([np.zeros_like(xs), xs], 1)
-        logs = self.downhill_optimizer.optimize(xys)
-        diffs = tf.abs(self.downhill_optimizer.pds[:, 1] - logs[:, None, 1])
+        logs = self.downhill_optimizer.optimize(xs[:, None])
+        diffs = tf.abs(self.downhill_optimizer.pds[:, -1] - logs[:, None, -1])
         mins = tf.argmin(diffs, axis=1)
         uniques = tf.unique(mins).y
         vecs = tf.gather(self.downhill_optimizer.vectors, uniques)
