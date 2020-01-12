@@ -1,0 +1,55 @@
+basenames:
+  - c
+  - g
+  - d
+  - a
+  - e
+  - b
+  - fsharp
+  - csharp
+  - gsharp
+  - dsharp
+  - asharp
+  - esharp
+  - bsharp
+  - fdoublesharp
+  - cdoublesharp
+  - gdoublesharp
+  - ddoublesharp
+  - adoublesharp
+  - edoublesharp
+  - bdoublesharp
+  - fdoubleflat
+  - cdoubleflat
+  - gdoubleflat
+  - ddoubleflat
+  - adoubleflat
+  - edoubleflat
+  - bdoubleflat
+  - fflat
+  - cflat
+  - gflat
+  - dflat
+  - aflat
+  - eflat
+  - bflat
+  - f
+primesteps: 
+  - 0
+  - 1
+  - 4
+  - -2
+  - -1
+  - 3
+primedegrees:
+  - 7
+  - 11
+  - 16
+  - 20
+  - 24
+  - 26
+primealterations:
+  5: f
+  7: s
+  11: e
+  13: t

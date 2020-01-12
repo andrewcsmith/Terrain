@@ -2,8 +2,9 @@ import harmonic_distance as hd
 import numpy as np
 import tensorflow as tf
 from optimizer import BoundedOptimizer
+import yaml
 
-FOURTH = 5.0 / 12.0
+FOURTH = np.log2(4.0 / 3.0)
 
 class TromboneDuo:
     def __init__(self, c=0.02, learning_rate=1.0e-4, convergence_threshold=1.0e-8, max_iters=10000):

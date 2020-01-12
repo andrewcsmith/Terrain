@@ -5,6 +5,7 @@ import yaml
 
 from optimizer import *
 from trombone_duo import *
+from structure_presenter import StructurePresenter
 
 F = np.log2(4.0 / 3.0)
 G = np.log2(3.0 / 2.0)
@@ -22,11 +23,11 @@ class Structure:
         self.ratio_stack = self.__get_ratio_stack()
 
     def __repr__(self):
-        return f"{self.current_base}\n{self.current_base_ratio}\n{self.duo.current_pitches + self.current_base}\n{self.duo.current_ratio()}"
+        return f"{StructurePresenter(self)}"
     
     def __init_downhill(self):
         opt = DownhillOptimizer(n_points=1024, c=0.03, learning_rate=1.0e-3, dimensions=1)
-        opt.populate_vectors([5, 5, 3, 2, 1, 1], (0.0, 1.0), hd_threshold=12.0)
+        opt.populate_vectors([6, 5, 2, 1, 1, 1], (0.0, 1.0), hd_threshold=12.0)
         opt.populate_perms()
         opt.populate_distances()
         opt.populate_loss()
@@ -54,7 +55,7 @@ class Structure:
     def __get_duo(self):
         with open("./init.yml", "r") as init:
             options = yaml.safe_load(init)
-        duo = TromboneDuo()
+        duo = TromboneDuo(c=0.02)
         for trombone in duo.trombones:
             trombone.harmonic = options['starting_harmonic']
         duo.cache_vectors(options['prime_limits'], options['bounds'], options['hd_threshold'])
